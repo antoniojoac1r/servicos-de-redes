@@ -53,11 +53,11 @@ networks:
   todolist:
 " > $TARGET_DIR/docker-compose.yml
 
+touch $TARGET_DIR/instance
+
 rm -rf $REPO_DIR
 
 sudo apt install postgresql-client-16
-
-PGPASSWORD=220279lucas12435 psql -h $END_POINT -U postgres -c "CREATE DATABASE todolist;"
 
 docker build -t todolist_postgres .
 
