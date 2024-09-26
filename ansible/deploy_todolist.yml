@@ -22,7 +22,7 @@
 
   tasks:
     - name: Criando docker com a aplicação
-       copy:
+      copy:
         src: ./docker_setup.sh
         dest: ~/docker_setup.sh
         owner: root
