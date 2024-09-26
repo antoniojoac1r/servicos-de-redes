@@ -1,10 +1,10 @@
 provider "aws" {
-   region = "${var.aws_region}"
-   default_tags {
-      tags = {
-         Environment = "${var.environment}"
-         Service     = "postgres"
-         CreatedBy   = "terraform"
-      }
+  region = "${var.aws_region}"
+  default_tags {
+    tags = {
+      Environment = "${var.environment}"
+      Service     = "postgres"
+      CreatedBy   = "terraform"
+    }
   }
 }

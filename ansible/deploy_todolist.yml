@@ -1,38 +1,38 @@
 ---
-- name: Install docker
-  hosts: "{{ my_hosts | d([]) }}"
-  become: true
+- name: Deploy TodoList Application
+  hosts: todolist
+  become: yes
 
   tasks:
-    - name: Install docker dependencies
-      ansible.builtin.apt:
-        name:
-          - apt-transport-https
-          - ca-certificates
-          - curl
-          - gnupg-agent
-          - software-properties-common
-        update_cache: true
+    - name: Copy script to remote host
+      copy:
+        src: ./docker_install.sh.sh
+        dest: ~/docker_install.sh
+        owner: root
+        group: root
+        mode: '0744'
 
-    - name: Add docker gpg key
-      ansible.builtin.apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
-        keyring: /etc/apt/keyrings/docker.gpg
+    - name: Make script executable by root
+      file:
+        path: ~/docker_install.sh
+        mode: '0700'
 
-    - name: Add docker repository
-      ansible.builtin.apt_repository:
-        filename: docker
-        repo: deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename | lower }} stable
-        state: present
+    - name: Execute script as root
+      command: ~/docker_install.sh
 
-    - name: Install docker engine
-      ansible.builtin.apt:
-        name:
-          - docker-ce
-          - docker-ce-cli
-          - containerd.io
-          - docker-buildx-plugin
-          - docker-scan-plugin
-          - docker-compose-plugin
-        update_cache: true
+  tasks:
+    - name: Criando docker com a aplicação
+       copy:
+        src: ./docker_setup.sh
+        dest: ~/docker_setup.sh
+        owner: root
+        group: root
+        mode: '0744'
+
+    - name: Make script executable by root
+      file:
+        path: ~/docker_setup.sh
+        mode: '0700'
+
+    - name: Execute script as root
+      command: ~/docker_setup.sh

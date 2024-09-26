@@ -1,4 +1,3 @@
-# Allow inbound SSH for EC2 instances
 resource "aws_security_group_rule" "allow_ssh_in" {
   description       = "Allow SSH"
   type              = "ingress"
@@ -19,7 +18,6 @@ resource "aws_security_group_rule" "allow_http_in_api" {
   security_group_id = aws_security_group.default.id
 }
 
-# Allow all outbound traffic
 resource "aws_security_group_rule" "allow_all_out" {
   description       = "Allow outbound traffic"
   type              = "egress"
