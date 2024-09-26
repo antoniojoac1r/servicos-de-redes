@@ -1,30 +1,19 @@
-resource "aws_db_instance" "RDS" {
-  allocated_storage    = 20
-  engine               = "postgres"
-  engine_version       = "16"
-  instance_class       = "db.t3.micro"
-  username             = "postgre"
-  password             = "lucas12435"
-  parameter_group_name = aws_db_parameter_group.custom_postgres.name
-  skip_final_snapshot  = true
-  publicly_accessible  = false
+resource "aws_db_instance" "rds_postgres" {
+  allocated_storage = 20
+  identifier = "to-do-db"
+  storage_type = "gp2"           
+  engine = "postgres" 
+  engine_version = "16"
+  instance_class = "db.t3.micro"
+  multi_az = true
 
-  vpc_security_group_ids = [aws_security_group.web_application_gp.id]
-  db_subnet_group_name   = aws_db_subnet_group.todolist_db_subnet_group.name
+  username = "postgres"
+  password = "220279lucas12435"
 
-  identifier            = "todolist-db-instance" 
-  
-}
+  db_subnet_group_name = aws_db_subnet_group.private_db_subnet.name  
+  skip_final_snapshot = true
 
-
-resource "aws_db_parameter_group" "custom_postgres" {
-  name        = "custom-postgres"
-  family      = "postgres16"
-  description = "Custom parameter group for PostgreSQL 16"
-
-  parameter {
-    name         = "max_connections"
-    value        = "100"
-    apply_method = "pending-reboot"
-  }
+  vpc_security_group_ids = [
+    aws_security_group.rds_sg.id
+  ]
 }

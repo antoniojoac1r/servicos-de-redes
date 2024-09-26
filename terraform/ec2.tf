@@ -1,12 +1,10 @@
-resource "aws_instance" "web_application" {
-  ami             = "ami-0e86e20dae9224db8"
-  instance_type   = "t2.micro"
-  key_name        = "vockey"
-  vpc_security_group_ids = [ aws_security_group.web_application_gp.id ]
-  subnet_id       = [ aws_subnet.private_subnet_1.id ]
+resource "aws_instance" "todoList" {
+  ami                    = "ami-0e86e20dae9224db8"
+  instance_type          = "t2.micro"
+  key_name               = "vockey"
+  subnet_id              = aws_subnet.public_subnet_a.id
   associate_public_ip_address = true
-
-  tags = {
-    Name = "web_application"
-  }
+  vpc_security_group_ids = [
+    aws_security_group.default.id
+  ]
 }
