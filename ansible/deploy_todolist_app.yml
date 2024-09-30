@@ -1,0 +1,68 @@
+- hosts: EC2
+  remote_user: ubuntu
+  become: true
+  gather_facts: true
+
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  tasks:
+    - name: Adicionar a chave GPG do Docker
+      ansible.builtin.apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Adicionar repositório Docker
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_facts['lsb']['codename'] }} stable"
+        state: present
+
+    - name: Atualizar pacotes apt
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Instalar Docker
+      ansible.builtin.apt:
+        name: docker-ce
+        state: present
+
+    - name: Instalar Docker Compose V2
+      ansible.builtin.apt:
+        name: docker-compose-plugin
+        state: present
+
+    - name: Adicionar o usuário ubuntu ao grupo docker
+      ansible.builtin.user:
+        name: ubuntu
+        groups: docker
+        append: yes
+    - name: Verificar se o diretório do repositório existe
+      ansible.builtin.stat:
+        path: /home/ubuntu/todolist_postgres
+      register: repo_directory
+
+    - name: Clonar o repositório caso não exista
+      ansible.builtin.git:
+        repo: 'https://github.com/antoniojoac1r/todolist_postgres.git'
+        dest: '/home/ubuntu/todolist_postgres'
+        version: master
+      when: not repo_directory.stat.exists
+
+    - name: Clonar o repositório caso não exista
+      ansible.builtin.git:
+        repo: 'https://github.com/antoniojoac1r/todolist_postgres.git'
+        dest: '/home/ubuntu/todolist_postgres'
+        version: master
+        update: yes
+      when: repo_directory.stat.exists
+
+
+    - name: Copiando arquivo env para a todolist
+      copy:
+        src: ./.env
+        dest: '/home/ubuntu/todolist_postgres/'
+
+    - name: executar docker compose up
+      raw: |
+        cd /home/ubuntu/todolist_postgres/ && \
+        docker compose up -d
